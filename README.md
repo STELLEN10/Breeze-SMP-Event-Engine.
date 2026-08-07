@@ -4,7 +4,7 @@ A safety-first Minecraft Bedrock Edition add-on for scheduled Breeze SMP events.
 
 ## Current status
 
-Stages 1–3 are complete: the pack scaffold, configurable real-world schedule, persistent scheduler state, lifecycle, announcements, countdowns, and a world-safe Supply Drop are implemented. Teleportation, generic structure management, and the remaining event library are still to come.
+Stages 1–4 are complete: the pack scaffold, configurable real-world schedule, persistent scheduler state, lifecycle, announcements, countdowns, Supply Drop, and reusable location/structure/teleport/reward/score services are implemented. The remaining event types are registered as disabled configuration gates until their rules and safe locations are explicitly designed.
 
 ## Project layout
 
@@ -56,4 +56,14 @@ See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) and [`docs/TEST_CHECKLIST.m
 
 ## Packaging
 
-Packaging as a `.mcaddon` is intentionally deferred until pack import and Supply Drop have been tested. The eventual package will contain the two pack directories, not a world save.
+Create a distributable archive with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/package-mcaddon.ps1
+```
+
+The output is `dist/Breeze-SMP-Event-Engine.mcaddon` and contains only the behavior and resource packs—not a world save. The archive is structurally validated locally, but must still be imported into Minecraft before it can be considered release-tested.
+
+## Event-library status
+
+Supply Drop is the only enabled production event. Treasure Hunt, King of the Hill, Bounty Hunt, PvP Tournament, Mob Invasion, Capture the Flag, The Crown, Blood Moon, and Final Battle have registry/configuration gates so the scheduler can safely recognize and skip them. Their individual gameplay rules are not invented or enabled yet; Final Battle in particular requires owner-approved objectives and teams before implementation.

@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "validate:stage1": "node tests/validate-stage1.mjs",
+    "validate:stage1": "node tests/validate-stage1.mjs && node tests/validate-package.mjs",
     "check:scripts": "node --check behavior_packs/breeze_smp_event_engine/scripts/main.js && node --check behavior_packs/breeze_smp_event_engine/scripts/core/announcementManager.js && node --check behavior_packs/breeze_smp_event_engine/scripts/core/eventManager.js && node --check behavior_packs/breeze_smp_event_engine/scripts/core/eventScheduler.js && node --check behavior_packs/breeze_smp_event_engine/scripts/events/supplyDropEvent.js"
   }
 }

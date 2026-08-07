@@ -70,13 +70,17 @@ export class EventManager {
     this.checkpoint = provider;
   }
 
+  setServices(services) {
+    this.services = services;
+  }
+
   invoke(event, method, ...args) {
     const handler = this.registry.get(event.type);
     if (!handler) return { ok: false, error: `No event handler for '${event.type}'.` };
     if (typeof handler[method] !== "function") return { ok: true, value: undefined };
 
     try {
-      return { ok: true, value: handler[method](event, ...args, { checkpoint: () => this.checkpoint?.() === true }) };
+      return { ok: true, value: handler[method](event, ...args, { checkpoint: () => this.checkpoint?.() === true, services: this.services }) };
     } catch (error) {
       logger.error(`${event.name} ${method} failed: ${error}`);
       return { ok: false, error: String(error) };

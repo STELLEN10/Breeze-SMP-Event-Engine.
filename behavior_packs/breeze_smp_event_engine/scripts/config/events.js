@@ -40,6 +40,19 @@ export const ENGINE_CONFIGURATION = {
       { typeId: "minecraft:golden_apple", amount: 2 }
     ]
   },
+  // Do not enable these entries until each event has a reviewed rule set,
+  // approved location(s), reward definition, and cleanup plan.
+  eventSettings: {
+    treasure_hunt: { enabled: false },
+    king_of_the_hill: { enabled: false },
+    bounty_hunt: { enabled: false },
+    pvp_tournament: { enabled: false },
+    mob_invasion: { enabled: false },
+    capture_the_flag: { enabled: false },
+    the_crown: { enabled: false },
+    blood_moon: { enabled: false },
+    final_battle: { enabled: false }
+  },
   testSchedule: [
     { id: "test-supply-drop", type: "supply_drop", name: "Supply Drop", date: "2026-08-07", time: "15:00" },
     { id: "test-treasure-hunt", type: "treasure_hunt", name: "Treasure Hunt", date: "2026-08-07", time: "15:30" },
