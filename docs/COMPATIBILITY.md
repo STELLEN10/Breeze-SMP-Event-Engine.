@@ -26,4 +26,6 @@ Announcements use stable screen-display APIs for chat, title, subtitle, and acti
 
 ## Deliberate current behaviour
 
-No runnable event type is registered until Supply Drop is implemented in Stage 3. When an unimplemented event reaches its warning window it is persisted as `skipped`; it is never announced or started. This protects the existing SMP while placement validation and cleanup design are implemented.
+Supply Drop is the only production event type currently registered. It resolves a random candidate only inside owner-approved areas, checks whitelisted terrain and empty crate space, and records the selected location before making a world change. Its lone barrel crate is intentionally retained at completion because a later generic structure tracker will be required to prove safe cleanup after players can interact with it.
+
+Other event types are persisted as `skipped` at their warning window; they are never announced or started. This protects the existing SMP while their placement validation and cleanup designs are implemented.

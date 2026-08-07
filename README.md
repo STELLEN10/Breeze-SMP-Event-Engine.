@@ -4,7 +4,7 @@ A safety-first Minecraft Bedrock Edition add-on for scheduled Breeze SMP events.
 
 ## Current status
 
-Stages 1 and 2 are complete: the pack scaffold, configurable real-world schedule, persistent scheduler state, event lifecycle, announcements, and countdowns are implemented. It does **not** yet place structures, teleport players, grant rewards, or alter terrain. The first complete event will be Supply Drop in Stage 3.
+Stages 1–3 are complete: the pack scaffold, configurable real-world schedule, persistent scheduler state, lifecycle, announcements, countdowns, and a world-safe Supply Drop are implemented. Teleportation, generic structure management, and the remaining event library are still to come.
 
 ## Project layout
 
@@ -21,6 +21,21 @@ Edit only [`events.js`](behavior_packs/breeze_smp_event_engine/scripts/config/ev
 
 Times are parsed as real-world calendar times. The engine stores only event state in the world; it never resets or recreates the world.
 
+### Supply Drop safety configuration
+
+Supply Drop is deliberately disabled at runtime until at least one owner-reviewed wilderness/event area is added to `supplyDrop.approvedAreas`. Example:
+
+```js
+approvedAreas: [
+  { id: "northern-wilderness", dimensionId: "minecraft:overworld", centerX: 2400, centerZ: -1800, radius: 120 }
+],
+protectedLocations: [
+  { dimensionId: "minecraft:overworld", x: 0, z: 0, radius: 500 }
+]
+```
+
+The engine chooses only loaded candidates in those approved areas, requires a whitelisted natural ground block plus two air blocks, and rejects configured protected-radius overlap. It never overwrites a block. With no approved area, the event is safely skipped before warning players.
+
 ## Development installation
 
 1. Copy `behavior_packs/breeze_smp_event_engine` to Minecraft's `development_behavior_packs` directory.
@@ -36,6 +51,7 @@ See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) and [`docs/TEST_CHECKLIST.m
 - No blocks, entities, inventories, or player locations are changed.
 - Missing/unimplemented event types are safely recorded as skipped; they are never announced or started.
 - Warnings/countdowns are persisted before presentation, so a script reload does not repeat an already-recorded stage.
+- Supply Drop places only a tracked barrel crate in empty air, after persisting its plan; it leaves the crate for players to loot rather than deleting a possibly player-modified block.
 - Scheduler state is stored under one namespaced world dynamic property and survives normal world/Realm restarts.
 
 ## Packaging

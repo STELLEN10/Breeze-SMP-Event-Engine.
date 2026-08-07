@@ -4,6 +4,7 @@ import { EventManager } from "./core/eventManager.js";
 import { EventScheduler } from "./core/eventScheduler.js";
 import { eventRegistry } from "./core/eventRegistry.js";
 import { diagnosticEvent } from "./events/diagnosticEvent.js";
+import { supplyDropEvent } from "./events/supplyDropEvent.js";
 import { logger } from "./core/logger.js";
 import { PersistenceManager } from "./core/persistenceManager.js";
 
@@ -11,6 +12,7 @@ import { PersistenceManager } from "./core/persistenceManager.js";
 system.run(() => {
   try {
     if (!eventRegistry.has("diagnostic")) eventRegistry.register("diagnostic", diagnosticEvent);
+    if (!eventRegistry.has("supply_drop")) eventRegistry.register("supply_drop", supplyDropEvent);
     const announcements = new AnnouncementManager();
     const eventManager = new EventManager(eventRegistry, announcements);
     const scheduler = new EventScheduler(new PersistenceManager(), eventRegistry, eventManager);

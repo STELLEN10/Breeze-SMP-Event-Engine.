@@ -30,6 +30,16 @@
 - [ ] Restart during warning/countdown and confirm previously persisted stages do not repeat.
 - [ ] Verify the content log has no screen-display, sound, or particle errors.
 
+## Stage 3 Supply Drop test
+
+- [ ] In a disposable copy of the world, configure one owner-reviewed wilderness area and protected locations in `supplyDrop`.
+- [ ] Schedule Supply Drop at least 45 seconds ahead; do not use an existing build area.
+- [ ] Confirm warning, countdown, `GO!`, and one coordinate announcement appear.
+- [ ] Confirm exactly one barrel appears at the announced coordinates, in air above an allowed ground block.
+- [ ] Confirm the configured loot is present and that no surrounding block was replaced.
+- [ ] Restart during the active event and confirm the persisted event recovers without creating a second crate.
+- [ ] Confirm the barrel remains after completion and the scheduler moves on.
+
 ## Deferred verification
 
 World-safe Supply Drop placement, rewards, player leave/rejoin recovery, and automatic next-event activation with a real event handler require later stages and are not claimed as runtime-tested yet.
