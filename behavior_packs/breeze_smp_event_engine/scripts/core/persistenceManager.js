@@ -2,7 +2,7 @@ import { world } from "@minecraft/server";
 import { logger } from "./logger.js";
 
 const STATE_KEY = "breeze_smp:event_engine_state";
-const STATE_VERSION = 1;
+const STATE_VERSION = 2;
 
 export class PersistenceManager {
   load() {
@@ -12,8 +12,8 @@ export class PersistenceManager {
         return this.createInitialState();
       }
 
-      const state = JSON.parse(raw);
-      if (state.version !== STATE_VERSION || !Array.isArray(state.completedEventIds)) {
+      const state = this.upgrade(JSON.parse(raw));
+      if (!state || !Array.isArray(state.completedEventIds) || !Array.isArray(state.skippedEventIds) || !Array.isArray(state.failedEvents)) {
         logger.warn("Stored event state is incompatible; preserving the world and starting a new engine state.");
         return this.createInitialState();
       }
@@ -22,6 +22,15 @@ export class PersistenceManager {
       logger.error(`Could not read scheduler state: ${error}`);
       return this.createInitialState();
     }
+  }
+
+  upgrade(state) {
+    if (state?.version === 1) {
+      state.version = STATE_VERSION;
+      state.pendingEvent = undefined;
+      state.failedEvents = [];
+    }
+    return state;
   }
 
   save(state) {
@@ -37,9 +46,11 @@ export class PersistenceManager {
   createInitialState() {
     return {
       version: STATE_VERSION,
+      pendingEvent: undefined,
       activeEvent: undefined,
       completedEventIds: [],
       skippedEventIds: [],
+      failedEvents: [],
       updatedAtEpochMs: 0
     };
   }

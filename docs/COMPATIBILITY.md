@@ -18,6 +18,12 @@ The schedule is evaluated using JavaScript wall-clock time (`Date.now()`), not M
 
 Realms do not expose a supported external clock-synchronization API to this pack. The engine therefore relies on the Realm host's JavaScript clock. Before a live season, test the test schedule against a known UTC timestamp and verify the content log. A future optional web-backed scheduler would require a non-Realm server integration and is out of scope for this pack.
 
-## Deliberate Stage 1 behaviour
+## Stage 2 lifecycle and presentation
 
-Event types have no handlers yet. If one becomes due, it is persisted as `skipped` rather than started late. This protects the existing SMP while Supply Drop and its validation/cleanup design are implemented.
+Registered events follow this lifecycle where implemented: `onWarning`, `onCountdown`, `onStart`, `onTick`, `onPlayerJoin`, `onComplete`, `onCleanup`, and `onRecover`. The scheduler persists pending/active state before starting an event. An event that misses the configured five-second safe start window is skipped, rather than unexpectedly starting late after downtime.
+
+Announcements use stable screen-display APIs for chat, title, subtitle, and action-bar text. Per-player sound and optional particles are presentation-only and individually error-isolated. They can be disabled in configuration. No command is executed by the announcement system.
+
+## Deliberate current behaviour
+
+No runnable event type is registered until Supply Drop is implemented in Stage 3. When an unimplemented event reaches its warning window it is persisted as `skipped`; it is never announced or started. This protects the existing SMP while placement validation and cleanup design are implemented.

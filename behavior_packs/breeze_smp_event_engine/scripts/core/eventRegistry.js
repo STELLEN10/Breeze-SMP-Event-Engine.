@@ -7,6 +7,9 @@ export class EventRegistry {
     if (this.handlers.has(type)) {
       throw new Error(`Duplicate event handler: ${type}`);
     }
+    if (!handler || typeof handler !== "object") {
+      throw new Error(`Event handler '${type}' must be an object.`);
+    }
     this.handlers.set(type, handler);
   }
 
@@ -19,6 +22,6 @@ export class EventRegistry {
   }
 }
 
-// Stage 1 intentionally registers no runnable events. Later stages add handlers
-// with onWarning, onStart, onTick, onComplete, and onCleanup lifecycle methods.
+// Stage 2 lifecycle: onWarning, onCountdown, onStart, onTick, onPlayerJoin,
+// onComplete, onCleanup, and onRecover. Stage 3 registers Supply Drop.
 export const eventRegistry = new EventRegistry();
