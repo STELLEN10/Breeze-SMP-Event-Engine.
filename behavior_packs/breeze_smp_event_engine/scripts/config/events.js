@@ -10,7 +10,14 @@ export const ENGINE_CONFIGURATION = {
     countdownSeconds: 10,
     defaultEventDurationSeconds: 120,
     schedulerIntervalTicks: 20,
-    missedEventGraceSeconds: 60
+    startGraceSeconds: 5
+  },
+  announcements: {
+    enabled: true,
+    soundId: "random.orb",
+    countdownSoundId: "note.pling",
+    particlesEnabled: false,
+    particleId: "minecraft:basic_flame_particle"
   },
   testSchedule: [
     { id: "test-supply-drop", type: "supply_drop", name: "Supply Drop", date: "2026-08-07", time: "15:00" },

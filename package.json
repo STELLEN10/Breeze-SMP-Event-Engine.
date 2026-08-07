@@ -5,6 +5,6 @@
   "type": "module",
   "scripts": {
     "validate:stage1": "node tests/validate-stage1.mjs",
-    "check:scripts": "node --check behavior_packs/breeze_smp_event_engine/scripts/main.js && node --check behavior_packs/breeze_smp_event_engine/scripts/core/eventScheduler.js"
+    "check:scripts": "node --check behavior_packs/breeze_smp_event_engine/scripts/main.js && node --check behavior_packs/breeze_smp_event_engine/scripts/core/announcementManager.js && node --check behavior_packs/breeze_smp_event_engine/scripts/core/eventManager.js && node --check behavior_packs/breeze_smp_event_engine/scripts/core/eventScheduler.js"
   }
 }

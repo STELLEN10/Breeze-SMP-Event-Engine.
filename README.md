@@ -2,9 +2,9 @@
 
 A safety-first Minecraft Bedrock Edition add-on for scheduled Breeze SMP events.
 
-## Stage 1 status
+## Current status
 
-This repository currently provides the pack scaffold, configurable real-world schedule, persistent scheduler state, test mode, and event registry. It does **not** yet place structures, teleport players, grant rewards, or alter terrain. The first complete event will be Supply Drop in Stage 3.
+Stages 1 and 2 are complete: the pack scaffold, configurable real-world schedule, persistent scheduler state, event lifecycle, announcements, and countdowns are implemented. It does **not** yet place structures, teleport players, grant rewards, or alter terrain. The first complete event will be Supply Drop in Stage 3.
 
 ## Project layout
 
@@ -17,7 +17,7 @@ tests/                                   Offline validation scripts
 
 ## Configuration
 
-Edit only [`events.js`](behavior_packs/breeze_smp_event_engine/scripts/config/events.js) for the current test schedule and timing values. The schedule uses South Africa Standard Time (UTC+02:00) by default. Set `testMode` to `false` and replace `testSchedule` with `productionSchedule` when preparing a season.
+Edit only [`events.js`](behavior_packs/breeze_smp_event_engine/scripts/config/events.js) for the current test schedule, timing values, and presentation settings. The schedule uses South Africa Standard Time (UTC+02:00) by default. Set `testMode` to `false` and replace `testSchedule` with `productionSchedule` when preparing a season.
 
 Times are parsed as real-world calendar times. The engine stores only event state in the world; it never resets or recreates the world.
 
@@ -34,7 +34,8 @@ See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) and [`docs/TEST_CHECKLIST.m
 
 - No commands are run against the world.
 - No blocks, entities, inventories, or player locations are changed.
-- Missed unimplemented events are safely recorded as skipped; they are never started late.
+- Missing/unimplemented event types are safely recorded as skipped; they are never announced or started.
+- Warnings/countdowns are persisted before presentation, so a script reload does not repeat an already-recorded stage.
 - Scheduler state is stored under one namespaced world dynamic property and survives normal world/Realm restarts.
 
 ## Packaging
