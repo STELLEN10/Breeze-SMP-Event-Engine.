@@ -19,6 +19,27 @@ export const ENGINE_CONFIGURATION = {
     particlesEnabled: false,
     particleId: "minecraft:basic_flame_particle"
   },
+  supplyDrop: {
+    enabled: true,
+    // Required before Supply Drop can run. Add only wilderness/event areas that
+    // the Realm owner has reviewed; the engine cannot reliably infer every base.
+    approvedAreas: [],
+    protectedLocations: [],
+    protectedRadiusBlocks: 256,
+    maxLocationAttempts: 12,
+    allowedGroundBlockTypes: [
+      "minecraft:grass_block", "minecraft:dirt", "minecraft:coarse_dirt",
+      "minecraft:stone", "minecraft:deepslate", "minecraft:sand",
+      "minecraft:red_sand", "minecraft:gravel"
+    ],
+    crateBlockType: "minecraft:barrel",
+    loot: [
+      { typeId: "minecraft:iron_ingot", amount: 16 },
+      { typeId: "minecraft:gold_ingot", amount: 8 },
+      { typeId: "minecraft:diamond", amount: 3 },
+      { typeId: "minecraft:golden_apple", amount: 2 }
+    ]
+  },
   testSchedule: [
     { id: "test-supply-drop", type: "supply_drop", name: "Supply Drop", date: "2026-08-07", time: "15:00" },
     { id: "test-treasure-hunt", type: "treasure_hunt", name: "Treasure Hunt", date: "2026-08-07", time: "15:30" },

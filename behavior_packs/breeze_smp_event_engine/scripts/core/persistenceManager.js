@@ -2,7 +2,7 @@ import { world } from "@minecraft/server";
 import { logger } from "./logger.js";
 
 const STATE_KEY = "breeze_smp:event_engine_state";
-const STATE_VERSION = 2;
+const STATE_VERSION = 3;
 
 export class PersistenceManager {
   load() {
@@ -13,7 +13,7 @@ export class PersistenceManager {
       }
 
       const state = this.upgrade(JSON.parse(raw));
-      if (!state || !Array.isArray(state.completedEventIds) || !Array.isArray(state.skippedEventIds) || !Array.isArray(state.failedEvents)) {
+      if (!state || !Array.isArray(state.completedEventIds) || !Array.isArray(state.completedEvents) || !Array.isArray(state.skippedEventIds) || !Array.isArray(state.failedEvents)) {
         logger.warn("Stored event state is incompatible; preserving the world and starting a new engine state.");
         return this.createInitialState();
       }
@@ -25,10 +25,11 @@ export class PersistenceManager {
   }
 
   upgrade(state) {
-    if (state?.version === 1) {
+    if (state?.version === 1 || state?.version === 2) {
       state.version = STATE_VERSION;
       state.pendingEvent = undefined;
-      state.failedEvents = [];
+      state.failedEvents ??= [];
+      state.completedEvents ??= [];
     }
     return state;
   }
@@ -49,6 +50,7 @@ export class PersistenceManager {
       pendingEvent: undefined,
       activeEvent: undefined,
       completedEventIds: [],
+      completedEvents: [],
       skippedEventIds: [],
       failedEvents: [],
       updatedAtEpochMs: 0

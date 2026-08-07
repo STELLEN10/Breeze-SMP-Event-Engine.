@@ -8,9 +8,18 @@ export class EventManager {
     this.announcements = announcements;
   }
 
+  canSchedule(event) {
+    const result = this.invoke(event, "canSchedule");
+    if (!result.ok) return result;
+    if (typeof result.value === "string") return { ok: false, error: result.value };
+    if (result.value === false) return { ok: false, error: "Event handler rejected the schedule." };
+    return { ok: true };
+  }
+
   onWarning(event) {
-    this.announcements.announceWarning(event, event.warningSeconds);
-    return this.invoke(event, "onWarning");
+    const result = this.invoke(event, "onWarning");
+    if (result.ok) this.announcements.announceWarning(event, event.warningSeconds);
+    return result;
   }
 
   onCountdown(event, secondsRemaining) {
@@ -20,7 +29,10 @@ export class EventManager {
 
   onStart(event) {
     const result = this.invoke(event, "onStart");
-    if (result.ok) this.announcements.announceGo(event);
+    if (result.ok) {
+      this.announcements.announceGo(event);
+      if (result.value?.location) this.announcements.announceLocation(event, result.value.location);
+    }
     return result;
   }
 
@@ -31,8 +43,11 @@ export class EventManager {
   onComplete(event) {
     const complete = this.invoke(event, "onComplete");
     const cleanup = this.invoke(event, "onCleanup");
-    if (complete.ok && cleanup.ok) this.announcements.announceCompletion(event);
     return !complete.ok ? complete : cleanup;
+  }
+
+  announceCompletion(event) {
+    this.announcements.announceCompletion(event);
   }
 
   recover(event) {
@@ -51,13 +66,17 @@ export class EventManager {
     this.getActiveEvent = provider;
   }
 
+  setCheckpointProvider(provider) {
+    this.checkpoint = provider;
+  }
+
   invoke(event, method, ...args) {
     const handler = this.registry.get(event.type);
     if (!handler) return { ok: false, error: `No event handler for '${event.type}'.` };
     if (typeof handler[method] !== "function") return { ok: true, value: undefined };
 
     try {
-      return { ok: true, value: handler[method](event, ...args) };
+      return { ok: true, value: handler[method](event, ...args, { checkpoint: () => this.checkpoint?.() === true }) };
     } catch (error) {
       logger.error(`${event.name} ${method} failed: ${error}`);
       return { ok: false, error: String(error) };

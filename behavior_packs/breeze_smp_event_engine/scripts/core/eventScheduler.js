@@ -16,6 +16,7 @@ export class EventScheduler {
     this.validateConfiguration();
     this.state = this.persistence.load();
     this.eventManager.setActiveEventProvider(() => this.state.activeEvent);
+    this.eventManager.setCheckpointProvider(() => this.save());
     this.eventManager.attachPlayerLifecycle();
     this.recoverActiveEvent();
     system.runInterval(() => this.safeTick(), ENGINE_CONFIGURATION.timings.schedulerIntervalTicks);
@@ -60,8 +61,9 @@ export class EventScheduler {
     const latenessMs = now - startAt;
 
     if (now < warningAt) return;
-    if (!this.registry.has(event.type)) {
-      this.markSkipped(event, "event type is not implemented yet");
+    const readiness = this.eventManager.canSchedule(event);
+    if (!readiness.ok) {
+      this.markSkipped(event, readiness.error);
       return;
     }
     if (latenessMs > ENGINE_CONFIGURATION.timings.startGraceSeconds * MS_PER_SECOND) {
@@ -135,6 +137,7 @@ export class EventScheduler {
 
     const result = this.eventManager.onStart(activeEvent);
     if (!result.ok) this.markFailed(event, "start", result.error);
+    else if (!this.save()) this.markFailed(event, "start", "could not persist started event state");
     else logger.info(`Started '${event.name}'.`);
   }
 
@@ -146,8 +149,18 @@ export class EventScheduler {
     }
     this.state.activeEvent = undefined;
     this.state.completedEventIds.push(activeEvent.id);
-    this.save();
-    logger.info(`Completed '${activeEvent.name}'.`);
+    this.state.completedEvents.push({
+      id: activeEvent.id,
+      type: activeEvent.type,
+      name: activeEvent.name,
+      startedAtEpochMs: activeEvent.startedAtEpochMs,
+      endedAtEpochMs: Date.now(),
+      location: activeEvent.data?.supplyDrop?.location
+    });
+    if (this.save()) {
+      this.eventManager.announceCompletion(activeEvent);
+      logger.info(`Completed '${activeEvent.name}'.`);
+    }
   }
 
   recoverActiveEvent() {

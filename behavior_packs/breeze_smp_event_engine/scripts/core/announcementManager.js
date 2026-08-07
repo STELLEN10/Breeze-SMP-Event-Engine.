@@ -40,6 +40,18 @@ export class AnnouncementManager {
     });
   }
 
+  announceLocation(event, location) {
+    const coordinates = `${location.x}, ${location.y}, ${location.z}`;
+    this.broadcast({
+      chatLines: ["§bSUPPLY DROP LOCATION", `§f${coordinates} §7(${location.dimensionId})`],
+      title: "§bSUPPLY DROP",
+      subtitle: `§f${coordinates}`,
+      actionBar: `§bCoordinates: §f${coordinates}`,
+      soundId: ENGINE_CONFIGURATION.announcements.soundId,
+      staySeconds: 5
+    });
+  }
+
   announceCompletion(event) {
     this.broadcast({
       chatLines: ["§6BREEZE SMP EVENT", `§e${event.name} §fhas ended.`],
