@@ -1,0 +1,10 @@
+# Minecraft content logs and local deployment output
+*.mcaddon
+*.mcpack
+*.zip
+content.log*
+development_behavior_packs/
+development_resource_packs/
+
+# Node tooling used only for local validation
+node_modules/
