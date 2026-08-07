@@ -1,4 +1,4 @@
-# Breeze SMP Event Engine
+# Brizz SMP Event Engine
 
 A safety-first Minecraft Bedrock Edition add-on for scheduled Breeze SMP events.
 
