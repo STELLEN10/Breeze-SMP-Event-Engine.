@@ -40,6 +40,26 @@
 - [ ] Restart during the active event and confirm the persisted event recovers without creating a second crate.
 - [ ] Confirm the barrel remains after completion and the scheduler moves on.
 
+## Stage 4 service tests
+
+- [ ] Confirm an approved-area candidate never intersects a configured protected radius.
+- [ ] Confirm an unloaded/invalid candidate is skipped instead of forcing chunk access.
+- [ ] In a disposable world, verify the teleportation manager records a return location before any event teleport and returns the player safely.
+- [ ] Verify a configured reward fits in the test inventory before awarding it; inventory overflow must fail without dropping/replacing items.
+- [ ] Verify event scores persist across a world restart.
+
+## Stage 5 readiness gates
+
+- [ ] Confirm every unconfigured event type is safely skipped before warning/starting.
+- [ ] Do not set an event type's `enabled` value to `true` until its individual module, objectives, location plan, rewards, player handling, and cleanup tests exist.
+
+## Stage 7 package test
+
+- [x] `.mcaddon` archive builds and contains both manifests locally.
+- [ ] Import `dist/Breeze-SMP-Event-Engine.mcaddon` in Minecraft Bedrock.
+- [ ] Activate both packs in a copied world and verify Content Log is clean.
+- [ ] Test the archive in a non-production Realm copy before using it on Breeze SMP.
+
 ## Deferred verification
 
 World-safe Supply Drop placement, rewards, player leave/rejoin recovery, and automatic next-event activation with a real event handler require later stages and are not claimed as runtime-tested yet.

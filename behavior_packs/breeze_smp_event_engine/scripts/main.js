@@ -4,17 +4,35 @@ import { EventManager } from "./core/eventManager.js";
 import { EventScheduler } from "./core/eventScheduler.js";
 import { eventRegistry } from "./core/eventRegistry.js";
 import { diagnosticEvent } from "./events/diagnosticEvent.js";
+import { EVENT_CATALOG, createConfigurationGatedEvent } from "./events/eventCatalog.js";
 import { supplyDropEvent } from "./events/supplyDropEvent.js";
+import { LocationManager } from "./core/locationManager.js";
 import { logger } from "./core/logger.js";
+import { PlayerManager } from "./core/playerManager.js";
 import { PersistenceManager } from "./core/persistenceManager.js";
+import { RewardManager } from "./core/rewardManager.js";
+import { ScoreManager } from "./core/scoreManager.js";
+import { StructureManager } from "./core/structureManager.js";
+import { TeleportationManager } from "./core/teleportationManager.js";
 
 // Deferring one tick avoids calling world APIs from early-execution mode.
 system.run(() => {
   try {
     if (!eventRegistry.has("diagnostic")) eventRegistry.register("diagnostic", diagnosticEvent);
     if (!eventRegistry.has("supply_drop")) eventRegistry.register("supply_drop", supplyDropEvent);
+    for (const type of Object.keys(EVENT_CATALOG)) {
+      if (!eventRegistry.has(type)) eventRegistry.register(type, createConfigurationGatedEvent(type));
+    }
     const announcements = new AnnouncementManager();
     const eventManager = new EventManager(eventRegistry, announcements);
+    eventManager.setServices({
+      locationManager: new LocationManager(),
+      structureManager: new StructureManager(),
+      teleportationManager: new TeleportationManager(),
+      rewardManager: new RewardManager(),
+      scoreManager: new ScoreManager(),
+      playerManager: new PlayerManager()
+    });
     const scheduler = new EventScheduler(new PersistenceManager(), eventRegistry, eventManager);
     scheduler.start();
   } catch (error) {
